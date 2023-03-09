@@ -23,21 +23,25 @@ DROP VIEW IF EXISTS vTopCustomerEachGenre;
 /*
 ============================================================================
 Question 1: Complete the query for vCustomerPerEmployee.
-WARNNIG: DO NOT REMOVE THE STATEMENT "CREATE VIEW vCustomerPerEmployee AS"
+WARNING: DO NOT REMOVE THE STATEMENT "CREATE VIEW vCustomerPerEmployee AS"
 ============================================================================
 */
 
 CREATE VIEW vCustomerPerEmployee  AS
 --Remove this line and complete your query for question 1 here
-SELECT "LastName" AS LastName, "FirstName" AS FirstName, "EmployeeID" AS EmployeeID FROM employees
-UNION
-SELECT COUNT(*) AS TotalCustomer FROM (
-    SELECT customers.SupportRepId, employees.EmployeeID
-    FROM employees
-    INNER JOIN customers
-    ON customers.SupportRepId = employees.EmployeeID
-); 
 
+--SELECT "LastName" AS LastName, "FirstName" AS FirstName, "EmployeeID" AS EmployeeID FROM employees
+
+--SELECT SupportRepId, COUNT(SupportRepId) As TotalCustomers FROM customers
+--GROUP BY SupportRepId;
+
+
+SELECT e.LastName, e.FirstName, e.EmployeeID, COUNT(c.SupportRepId) AS TotalCustomers
+
+FROM employees e
+LEFT JOIN customers c
+on e.EmployeeID = c.SupportRepiD
+GROUP BY EmployeeID;
 
 /*
 ============================================================================
