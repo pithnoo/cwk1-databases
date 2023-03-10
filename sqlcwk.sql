@@ -60,7 +60,7 @@ LEFT JOIN customers c
 ON c.CustomerId = i.CustomerId
 
 GROUP BY g.Name 
-ORDER BY Sales ASC;
+ORDER BY Sales ASC LIMIT 10;
 
 /*
 ============================================================================
@@ -98,11 +98,16 @@ FROM(
     JOIN artists ar
     on al.ArtistId = ar.ArtistId
 
-    GROUP BY Album
+    GROUP BY Album, Genre
     --ORDER BY Genre, Sales DESC
 )
 WHERE Rank = 1;
 
+/*
+WHERE(
+    Genre = "Blues" 
+);
+*/
 
 /*
 ============================================================================
@@ -111,7 +116,7 @@ Complete the query for v10BestSellingArtists
 WARNNIG: DO NOT REMOVE THE STATEMENT "CREATE VIEW v10BestSellingArtists AS"
 ============================================================================
 */
--- CREATE VIEW v10BestSellingArtists AS
+--CREATE VIEW v10BestSellingArtists AS
 
 
 
