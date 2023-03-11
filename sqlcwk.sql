@@ -99,32 +99,61 @@ FROM(
     on al.ArtistId = ar.ArtistId
 
     GROUP BY Album, Genre
-    --ORDER BY Genre, Sales DESC
 )
 WHERE Rank = 1;
 
-/*
-WHERE(
-    Genre = "Blues" 
-);
-*/
 
 /*
 ============================================================================
 Question 4:
 Complete the query for v10BestSellingArtists
-WARNNIG: DO NOT REMOVE THE STATEMENT "CREATE VIEW v10BestSellingArtists AS"
+WARNING: DO NOT REMOVE THE STATEMENT "CREATE VIEW v10BestSellingArtists AS"
 ============================================================================
 */
---CREATE VIEW v10BestSellingArtists AS
+CREATE VIEW v10BestSellingArtists AS
+SELECT Artist, TotalAlbum, TotalTrackSales
+FROM(
+    SELECT *
+    FROM(
+        SELECT ar.Name AS Artist,
+        COUNT(al.AlbumId) AS TotalTrackSales
 
+        FROM genres g
+        JOIN tracks t
+        ON t.GenreId = g.GenreId
 
+        JOIN invoice_items ii
+        ON ii.TrackId = t.TrackId
+
+        JOIN albums al
+        on al.AlbumId = t.AlbumId
+
+        JOIN artists ar
+        on al.ArtistId = ar.ArtistId
+
+        GROUP BY Artist 
+        ORDER BY TotalTrackSales DESC LIMIT 10
+    ) t1 
+
+    JOIN(
+        SELECT art.Name AS Artist,
+        COUNT(alb.albumId) AS TotalAlbum
+
+        FROM albums alb
+        JOIN artists art
+        ON alb.ArtistId = art.ArtistId
+        
+        GROUP BY Artist
+    ) t2
+
+    ON t1.Artist = t2.Artist
+);
 
 /*
 ============================================================================
 Question 5:
 Complete the query for vTopCustomerEachGenre
-WARNNIG: DO NOT REMOVE THE STATEMENT "CREATE VIEW vTopCustomerEachGenre AS" 
+WARNING: DO NOT REMOVE THE STATEMENT "CREATE VIEW vTopCustomerEachGenre AS" 
 ============================================================================
 */
 --CREATE VIEW vTopCustomerEachGenre AS
@@ -136,6 +165,6 @@ You can uncomment the following to look at invididual views created
 */
 --SELECT * FROM vCustomerPerEmployee;
 --SELECT * FROM v10WorstSellingGenres;
-SELECT * FROM vBestSellingGenreAlbum;
---SELECT * FROM v10BestSellingArtists;
+--SELECT * FROM vBestSellingGenreAlbum;
+SELECT * FROM v10BestSellingArtists;
 --SELECT * FROM vTopCustomerEachGenre;
