@@ -156,15 +156,40 @@ Complete the query for vTopCustomerEachGenre
 WARNING: DO NOT REMOVE THE STATEMENT "CREATE VIEW vTopCustomerEachGenre AS" 
 ============================================================================
 */
---CREATE VIEW vTopCustomerEachGenre AS
+CREATE VIEW vTopCustomerEachGenre AS
 
+SELECT Genre, TopSpender, TotalSpending
+FROM(
+    SELECT *
+    FROM(
+        SELECT c.FirstName || ' ' || c.LastName AS TopSpender,
+        g.Name AS Genre,
+        SUM(ii.UnitPrice * ii.Quantity) AS TotalSpending,
+        ROW_NUMBER() OVER (PARTITION BY g.Name ORDER BY SUM(ii.UnitPrice * ii.Quantity) DESC) AS Rank
+
+        FROM genres g
+        JOIN tracks t
+        ON g.GenreId = t.GenreId
+
+        JOIN invoice_items ii
+        ON ii.TrackId = t.TrackId
+
+        JOIN invoices i
+        ON i.InvoiceId = ii.InvoiceId
+
+        JOIN customers c
+        ON c.CustomerId = i.CustomerId
+
+        GROUP BY Genre, c.CustomerId 
+    ) WHERE Rank = 1
+);
 
 /*
 To view the created views, use SELECT * FROM views;
 You can uncomment the following to look at invididual views created
 */
---SELECT * FROM vCustomerPerEmployee;
---SELECT * FROM v10WorstSellingGenres;
---SELECT * FROM vBestSellingGenreAlbum;
+SELECT * FROM vCustomerPerEmployee;
+SELECT * FROM v10WorstSellingGenres;
+SELECT * FROM vBestSellingGenreAlbum;
 SELECT * FROM v10BestSellingArtists;
---SELECT * FROM vTopCustomerEachGenre;
+SELECT * FROM vTopCustomerEachGenre;
